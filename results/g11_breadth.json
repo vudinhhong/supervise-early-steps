@@ -1,0 +1,273 @@
+{
+  "args": {
+    "teacher": "Qwen/Qwen2.5-7B-Instruct",
+    "student": "Qwen/Qwen2.5-1.5B",
+    "objective": "ce",
+    "prompts": 6000,
+    "samples": 4,
+    "seeds": "0 1 2",
+    "lr": 0.0001,
+    "epochs": 3,
+    "lora_r": 32,
+    "batch": 4,
+    "accum": 4,
+    "gen_batch": 16,
+    "eval_batch": 16,
+    "suite_limit": 0,
+    "floor": 0,
+    "tag": "g11_breadth",
+    "runs_tag": "g11_breadth",
+    "nshards": 1,
+    "shard": 0,
+    "list_arms": false,
+    "base_accuracy": 0.03226735811005474
+  },
+  "census": {
+    "gsm8k-heldout": 1200,
+    "gsm8k-test": 1319,
+    "math-heldout": 627,
+    "math500": 325
+  },
+  "suite_n": 3471,
+  "suite_mde_points": 2.125424695303897,
+  "base_accuracy": 0.03226735811005474,
+  "matched_count": 67637,
+  "teacher_bucket_share": [
+    0.0,
+    0.08894122336798599,
+    0.08893597826429028,
+    0.08820690885058798,
+    0.08403180630881073,
+    0.649884083208325
+  ],
+  "coverage": {
+    "b1_deep": {
+      "buckets": [
+        1
+      ],
+      "target": 0.001,
+      "rate": 0.0009111398145217768,
+      "mass_throttled": 0.08894122336798599,
+      "per_bucket": [
+        0.0,
+        0.0014960808852289096,
+        1.0770755242024173,
+        1.1094441431309678,
+        1.09524510349885,
+        1.0989346053756923
+      ],
+      "starved_mass_below_0.01": 0.08894122336798599,
+      "steps_before_match": 173717,
+      "steps_after_match": 67637,
+      "c2_full": 5.158580320514734
+    },
+    "b1b2": {
+      "buckets": [
+        1,
+        2
+      ],
+      "target": 0.02,
+      "rate": 0.0165011595691113,
+      "mass_throttled": 0.17787720163227627,
+      "per_bucket": [
+        0.0,
+        0.019116589089036067,
+        0.018618993472861663,
+        1.2014648161297445,
+        1.2138306777571994,
+        1.2135486731095242
+      ],
+      "starved_mass_below_0.01": 0.0,
+      "steps_before_match": 157309,
+      "steps_after_match": 67637,
+      "c2_full": 8.386069155299086
+    },
+    "b1b2b3b4": {
+      "buckets": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "target": 0.02,
+      "rate": 0.013089337371245081,
+      "mass_throttled": 0.350115916791675,
+      "per_bucket": [
+        0.0,
+        0.018617895460626428,
+        0.01994892157806607,
+        0.017599582267525553,
+        0.019001842759498122,
+        1.5286122348494675
+      ],
+      "starved_mass_below_0.01": 0.0,
+      "steps_before_match": 124754,
+      "steps_after_match": 67637,
+      "c2_full": 15.569261844844675
+    }
+  },
+  "runs": [
+    {
+      "cell": "b1_deep",
+      "seed": 0,
+      "buckets": [
+        1
+      ],
+      "target": 0.001,
+      "starved_mass": 0.08894122336798599,
+      "c2_full": 5.158580320514734,
+      "accuracy": 0.6554307116104869,
+      "gain_points": 62.31633535004322,
+      "n_supervised_positions": 1014975
+    },
+    {
+      "cell": "b1b2",
+      "seed": 0,
+      "buckets": [
+        1,
+        2
+      ],
+      "target": 0.02,
+      "starved_mass": 0.0,
+      "c2_full": 8.386069155299086,
+      "accuracy": 0.6799193316047248,
+      "gain_points": 64.765197349467,
+      "n_supervised_positions": 990825
+    },
+    {
+      "cell": "b1b2b3b4",
+      "seed": 0,
+      "buckets": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "target": 0.02,
+      "starved_mass": 0.0,
+      "c2_full": 15.569261844844675,
+      "accuracy": 0.661768942667819,
+      "gain_points": 62.95015845577643,
+      "n_supervised_positions": 906997
+    },
+    {
+      "cell": "b1_deep",
+      "seed": 1,
+      "buckets": [
+        1
+      ],
+      "target": 0.001,
+      "starved_mass": 0.08894122336798599,
+      "c2_full": 5.158580320514734,
+      "accuracy": 0.6577355229040622,
+      "gain_points": 62.546816479400746,
+      "n_supervised_positions": 1014975
+    },
+    {
+      "cell": "b1b2",
+      "seed": 1,
+      "buckets": [
+        1,
+        2
+      ],
+      "target": 0.02,
+      "starved_mass": 0.0,
+      "c2_full": 8.386069155299086,
+      "accuracy": 0.6764621146643619,
+      "gain_points": 64.41947565543072,
+      "n_supervised_positions": 990825
+    },
+    {
+      "cell": "b1b2b3b4",
+      "seed": 1,
+      "buckets": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "target": 0.02,
+      "starved_mass": 0.0,
+      "c2_full": 15.569261844844675,
+      "accuracy": 0.6623451454912129,
+      "gain_points": 63.00777873811582,
+      "n_supervised_positions": 906997
+    },
+    {
+      "cell": "b1_deep",
+      "seed": 2,
+      "buckets": [
+        1
+      ],
+      "target": 0.001,
+      "starved_mass": 0.08894122336798599,
+      "c2_full": 5.158580320514734,
+      "accuracy": 0.6493805819648516,
+      "gain_points": 61.71132238547968,
+      "n_supervised_positions": 1014975
+    },
+    {
+      "cell": "b1b2",
+      "seed": 2,
+      "buckets": [
+        1,
+        2
+      ],
+      "target": 0.02,
+      "starved_mass": 0.0,
+      "c2_full": 8.386069155299086,
+      "accuracy": 0.6761740132526649,
+      "gain_points": 64.39066551426102,
+      "n_supervised_positions": 990825
+    },
+    {
+      "cell": "b1b2b3b4",
+      "seed": 2,
+      "buckets": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "target": 0.02,
+      "starved_mass": 0.0,
+      "c2_full": 15.569261844844675,
+      "accuracy": 0.6519734946701239,
+      "gain_points": 61.97061365600691,
+      "n_supervised_positions": 906997
+    }
+  ],
+  "oom_arms": [],
+  "partial": false,
+  "reference_accuracy": 66.6,
+  "verdict": {
+    "b1_deep": {
+      "accuracy": 65.41822721598002,
+      "n": 3,
+      "drop_vs_reference": 1.1817727840199694,
+      "collapsed": false
+    },
+    "b1b2": {
+      "accuracy": 67.75184865072505,
+      "n": 3,
+      "drop_vs_reference": -1.1518486507250572,
+      "collapsed": false
+    },
+    "b1b2b3b4": {
+      "accuracy": 65.86958609430519,
+      "n": 3,
+      "drop_vs_reference": 0.7304139056948031,
+      "collapsed": false
+    }
+  },
+  "reading": "neither alone",
+  "_env": {
+    "platform": "Linux-6.12.115+deb13.1-amd64-x86_64-with-glibc2.41",
+    "machine": "x86_64",
+    "timestamp": "2026-11-13T13:28:28",
+    "git": "n/a",
+    "code_sha": "df49ce25ce746380",
+    "torch": "2.11.0+cu130",
+    "cuda": false
+  }
+}

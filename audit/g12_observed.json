@@ -1,0 +1,12 @@
+{
+ "_provenance": "Output of analyse.py on the G12 reallocation sweep, run on the PBS cluster on 2026-11-02 (12 arms: four reallocation fractions x three seeds, Qwen2.5-1.5B, cross-entropy, 37509 supervised steps per arm). These values are transcribed from that run's g12_summary.json; the per-arm blobs live with the sweep, not in this package, because the sweep is reported in full elsewhere. The conference paper cites only the four numbers checked below and labels the stage exploratory.",
+ "_status": "EXPLORATORY: the registered replication gate failed. See thresholds.json, g12, REVISION 14.",
+ "accuracy": {"f000": 30.03, "f033": 66.32, "f067": 64.94, "f100": 65.87},
+ "seed_sd": {"f000": 7.48, "f033": 0.76, "f067": 0.38, "f100": 0.08},
+ "seeds": {
+  "f000": [37.34, 22.39, 30.37],
+  "f033": [66.15, 67.16, 65.66],
+  "f067": [64.88, 64.59, 65.34],
+  "f100": [65.80, 65.86, 65.95]
+ }
+}

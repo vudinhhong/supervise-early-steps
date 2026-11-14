@@ -1,0 +1,162 @@
+# Reproduction package — conference paper
+
+*Supervise the early steps: a matched study of where the loss is applied when
+distilling reasoning into small language models.*
+
+The numbers the paper states are produced from the files in `results/` by the code in
+`code/`. Every number the paper states is checked against a result file by
+`verify_paper_numbers.py`, with the exceptions listed under *What is not checked*.
+
+## Check it in one command
+
+```
+python verify_paper_numbers.py
+```
+
+This recomputes the numbers the paper states, with the exceptions listed below, and prints each next to the paper's
+version. The last run reported **290 checks OK, 0 MISMATCH** with the manuscript beside the
+package, and **280 OK** without it: ten of the checks read `conf.tex` and are skipped
+when it is absent. If a number ever stops
+matching, the paper is wrong and the script says which one.
+
+## Layout
+
+```
+code/scd/                 the library: abstraction, coverage estimators, corpus
+                          masking, training, statistics, evaluation
+code/experiments/         one file per stage, plus _common.py
+code/merge_g3.py          unions the sharded workers of the factorial into one blob
+audit/                    the supervision audit: how many distinct problems each
+                          mask actually trains on, and what early and late are
+                          matched on.  `audit_rows.py` and `audit_earlylate.py`
+                          need the trace corpus and so run on the training host;
+                          their captured output is in the two `.txt` files, which
+                          is what `verify_paper_numbers.py` checks the paper
+                          against.
+code/figs/make_figs.py    draws the figures from results/ only
+code/thresholds.json      acceptance thresholds, with the revision history
+code/run.sh               stage dispatcher
+code/artifacts/           eval_suite_3471.jsonl, the 3471 evaluation problems
+results/                  the result blobs the paper reads
+forward_tests.json        per-arm summary of the forward tests behind Table 2
+figs/                     fig_g0.pdf, fig_g3.pdf, generated from the result
+                          files; neither is used in the current manuscript
+```
+
+## Which stage produced which section
+
+| Paper section | Stage | Files |
+|---|---|---|
+| §6.1 positive control | `gp_control.py` | `gp_control.json` |
+| §6.1 exact world, estimators, Corollary 1 | `g0_estimator.py` | `g0_estimator.json` |
+| §6.2 behavioural validity | `g2_validity.py` | `g2_validity.json` |
+| §6.3 the factorial | `g3_measure_vs_loss.py`, `merge_g3.py` | `g3_measure_vs_loss*.json`, `..._runs.jsonl` |
+| §6.3 quantity control | `g7_dissociation.py` | `g7_dissociation.json` |
+| §6.4 forward tests (Table 2) | `g9_threshold.py`, `g10_positional.py`, `g11_breadth.py` | `g9_threshold.json`, `g10_positional.json`, `g11_breadth.json`, `forward_tests.json` |
+| §6.5 selection rule | `g6_mechanism.py` | `g6_mechanism.json` |
+
+The factorial ran as twenty shards sharing one append-only ledger
+(`g3_measure_vs_loss_runs.jsonl`), and the canonical `g3_measure_vs_loss.json` is the
+stage's own analysis over that ledger. The paper uses `g7_dissociation.json` **only**
+for the supervision-quantity control.
+
+## Acceptance thresholds
+
+`code/thresholds.json` holds every threshold, written before the stage it governs
+ran, together with the action to take when a threshold is missed. Later changes carry
+numbered revisions with their reasoning, so a reader can see which criteria were
+fixed in advance and which were not. The paper's Limitations section names the ones
+that were not.
+
+## A note on the audit transcripts
+
+The `.txt` files in `audit/` were produced by the scripts beside them on the training
+host, then translated from Vietnamese into English by hand, and the scripts were updated
+to match. The numbers are untouched; the surrounding labels are not verbatim machine
+output. `audit/ceiling.txt` reports the naive ratio `max w^2 / E_d[w^2]`, whereas the
+paper quotes the right-hand side of Eq. (5), which subtracts `C2` from both terms; the
+file states both.
+
+## What is not checked, and what is not here
+
+The script checks 290 values, or 280 when the manuscript is not beside the package. Section 8 of its output also reads `conf.tex` and
+requires the manuscript to print what the blobs say, which is what catches a figure
+left stale when a stage is re-run. It does not parse the whole manuscript: the
+3B and 14B teacher accuracies, the 3B student's untrained accuracy and the
+final-bucket occupancy of `early` are quoted from stages not re-run here and are not
+recomputed. Two things are not in this package:
+the teacher-student pair sweep and its figures, which belong to the journal study, and
+the raw training checkpoints, which are large and carry nothing the blobs do not.
+
+## Table 2, the forward tests
+
+`forward_tests.json` holds a per-arm summary of the three forward-test stages behind
+Table 2: 18 arms, 54 runs, with each arm's coverage coefficient, its per-seed
+accuracies, its mean, and the registered bar it was tested against. The verification
+script recomputes every entry of Table 2 from it, including the ratios and the three
+changes against the reference arm, and checks each registered bar against
+`thresholds.json`. The three stage scripts are in `code/experiments/`. The file carries a
+SHA-256 prefix of each source blob, and those blobs are in `results/` as well, so every
+entry can be traced back or recomputed from the runs themselves.
+
+The reference the depth and breadth cells are measured against, 66.60%, is fixed in
+`thresholds.json` and comes from the `early/0.02` arm of the positional stage as that
+stage stood when g11 was registered. The re-run puts the same arm at 66.54%, so against
+the current value the three changes read -1.12, +1.21 and -0.67 rather than -1.18, +1.15
+and -0.73. We keep the registered reference and record the difference here; no reading
+changes.
+
+Four of the five bars are not approached. The coverage ladder clears its own: with all
+21 runs complete, seven arms at three seeds, six levels sit within 0.79 points of one
+another and the seventh drops 2.30 points, giving a cliff ratio of 7.06 against a bar of
+3.0. The script checks the step, its Welch interval and the denominator the ratio
+divides by, because a flat ladder inflates the ratio and the step is the quantity that
+carries meaning.
+
+## Which revision of the code produced which blob
+
+Every blob under `results/` carries `_env`, written when the blob was saved. For the
+merged stages that is the moment of the merge, not of training, so `_env.code_sha` dates
+the analysis rather than the runs.
+
+The factorial ledger is finer grained. Sixty of its eighty records carry their own
+`code_sha`, all the same one; twenty predate the field. Those twenty are a block --
+seeds 2 and 4 of `early`, seeds 0 and 1 of `late` and seed 4 of `uniform`, in all four
+student-objective cells -- and their median training time is about a third longer, so
+they come from an earlier batch, probably on different hardware. The matched pair
+therefore draws seeds from two code states. Recomputed on the stamped sixty alone it is
++16.79, +8.65, +25.97 and +14.93 points: the same direction in every cell, larger in
+three of the four and smaller in the fourth (1.5B under FKL, 14.93 against the 17.30 the
+paper quotes). `verify_paper_numbers.py` checks all four. The other trained
+stages record no per-run `code_sha`.
+
+The tree in `code/` differs from the state the runs used in sixteen files. The changes
+that affect behaviour are: `train.py` raises `Diverged` when a loss or a gradient norm
+is not finite; `data.py` reads the evaluation suite from `code/artifacts/`;
+`teacherlogits.py` reads the logit cache from a zip; `runio.py` stamps `code_sha` and
+reads a blob back after writing it; `stats.py` computes an exact Spearman p-value for
+n <= 8; and the stage scripts carry the merge fixes. `abstraction.py`, `coverage.py` and
+`synthetic.py` differ only in comments, so `g0_estimator`, `g2_validity` and
+`g6_mechanism`, which were not retrained, are unaffected.
+
+## Every factorial cell ran exactly five times
+
+`results/g3_measure_vs_loss_runs.jsonl` holds 80 records, sixteen cells at five seeds,
+with no cell appearing twice. The verification script checks that directly. An earlier
+pass of this study had three cells of the 0.5B/FKL row recorded twice; those runs were
+superseded and the blobs they produced are kept, unused, in `results/superseded/`.
+
+## Environment
+
+`requirements.txt` pins the versions the reported runs used. The verification script
+needs only `numpy`.
+Python 3.14, PyTorch with CUDA, `transformers`, `peft`, `numpy`, `scipy`,
+`scikit-learn`, `matplotlib`. The trained stages reported here ran on NVIDIA RTX PRO
+6000 Blackwell Server Edition cards under torch 2.11.0+cu130; `g0_estimator`,
+`g2_validity` and `g6_mechanism` ran earlier on RTX 4090 cards under torch 2.9.1+cu128,
+and each blob records its own environment under `_env`. Evaluation is not
+bit-reproducible across the two: the 7B teacher scores 79.52% in the new environment
+against 79.29% in the old, which `results/superseded/gp_control_prev_environment.json`
+records. Teacher traces and teacher logit caches are generated once and reused, and
+are not shipped here because of their size. Regenerating them is the only expensive
+step: the analysis and the figures run from `results/` on a laptop.

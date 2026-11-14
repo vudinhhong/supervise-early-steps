@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this package, please cite the paper."
+title: "Supervise the early steps: reproduction package"
+abstract: >-
+  Code, result blobs, the pre-registration file and a verification script for the
+  paper "Supervise the early steps: a matched study of where the loss is applied
+  when distilling reasoning into small language models".
+authors:
+  - family-names: Vu
+    given-names: Dinh-Hong
+    affiliation: Ton Duc Thang University
+  - family-names: Duong
+    given-names: Trong-Chi
+    affiliation: Ton Duc Thang University
+  - family-names: Le
+    given-names: Anh-Cuong
+    affiliation: Ton Duc Thang University
+license: MIT
+repository-code: "https://github.com/OWNER/REPO"      # <-- sửa sau khi tạo repo
+# Sau khi Zenodo cấp DOI, thêm hai dòng sau và đẩy lại:
+# doi: "10.5281/zenodo.XXXXXXX"
+# version: "v1.0.0"

@@ -1,0 +1,40 @@
+{
+ "capacity_probe": {
+  "per_student": {
+   "Qwen/Qwen2.5-0.5B": {
+    "base": 0.0666,
+    "floor": 0.4572,
+    "gamma_points": 72.62550849899164,
+    "recovery": 0.5378275595900622
+   },
+   "Qwen/Qwen2.5-1.5B": {
+    "base": 0.0323,
+    "floor": 0.684,
+    "gamma_points": 76.05550849899164,
+    "recovery": 0.8568741605463599
+   },
+   "Qwen/Qwen2.5-3B": {
+    "base": 0.616,
+    "floor": 0.7427,
+    "gamma_points": 17.68550849899164,
+    "recovery": 0.7164057511109956
+   }
+  },
+  "swept_students": [
+   "Qwen/Qwen2.5-0.5B",
+   "Qwen/Qwen2.5-1.5B"
+  ],
+  "inherited": false,
+  "recovery_spread_points": 31.904660095629765,
+  "required_spread_points": 15.0,
+  "wide_enough": true
+ },
+ "provenance": {
+  "what": "capacity probe only -- no arms, no coverage table, no MDE",
+  "measured_by": "experiments/g3_measure_vs_loss.py, pid 885017, started 13/10/2026",
+  "transcribed_from": "logs/g3.out lines 26, 161, 169, 301, 309, 441, 442, 444",
+  "why": "the worker writes its blob only when the sweep ends; it was replaced at 46/80 arms, so this measurement would otherwise have been lost",
+  "precision": "base and floor are the log 2-decimal prints, so each recovery is accurate to about 0.2 points (0.06 for 3B, whose Gamma is narrow) and the spread to 0.3; the G3.0 threshold is 15.0, so the rounding cannot change the verdict",
+  "teacher_accuracy_source": "results/gp_control.json"
+ }
+}

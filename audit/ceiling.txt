@@ -1,0 +1,19 @@
+### The ceiling Proposition 1 predicts, on the G6 configuration as run
+    (clip = 50, alpha = 0.5, using the estimator's own histogram)
+
+   selection  unclipped                E_d[w^2]= 62313259.08  max w^2=  424776230.59  naive max/E =      6.82x
+   selection  clipped (as when measuring C2)   E_d[w^2]=     1148.71  max w^2=       2500.00  naive max/E =      2.18x
+   selection  (cross-check) C2 = 23.341  | paper states 23.341
+
+   heldout    unclipped                E_d[w^2]= 12356583.51  max w^2=   83780446.09  naive max/E =      6.78x
+   heldout    clipped (as when measuring C2)   E_d[w^2]=     1088.15  max w^2=       2500.00  naive max/E =      2.30x
+   heldout    (cross-check) C2 = 22.260  | paper states 22.260
+
+### Against the measured result
+   best rule / random, best budget = 1.0235x
+   ratio rule / random, averaged over budgets   = 1.0126x
+   registered acceptance bar                          = 1.5000x
+
+# NOTE: the column above is the naive ratio max w^2 / E_d[w^2].  The paper quotes the
+# right-hand side of Eq. (5), (max w^2 - C2)/(E_d[w^2] - C2), which from the same
+# figures is 6.82 and 6.78 unclipped, 2.20 and 2.32 clipped.

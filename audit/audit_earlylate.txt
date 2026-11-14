@@ -1,0 +1,22 @@
+--- 1. surviving row sets ---
+  uniform    15831 rows
+  early      15831 rows
+  late       15831 rows
+  early == late ?  True
+  early == uniform ?  True
+
+--- 2. supervision against trace length ---
+  uniform   mean trace length=11.67  mean supervised steps=2.37  ratio=0.216  corr(len,sup)=+0.893
+  early     mean trace length=11.67  mean supervised steps=2.37  ratio=0.216  corr(len,sup)=+0.893
+  late      mean trace length=11.67  mean supervised steps=2.37  ratio=0.216  corr(len,sup)=+0.893
+
+--- 3. token counts against the measured bound ---
+  early 681650 tokens | late 456821 tokens | ratio 1.49x
+  measured bound: a fourfold change moves accuracy by at most 1.5 points
+  => a 1.49x difference sits at one to two points; the observed gap is 21.6 points
+
+--- 4. teacher logit-cache coverage ---
+  cache holds 15994 keys
+  uniform    15809/ 15831 rows with logit cache (99.9%)
+  early      15809/ 15831 rows with logit cache (99.9%)
+  late       15809/ 15831 rows with logit cache (99.9%)

@@ -1,0 +1,16 @@
+mask             rows>=1     share      steps steps/row    acc ce   acc fkl
+----------------------------------------------------------------------------
+uniform            15831     93.4%      37509      2.37     65.81     66.17
+early              15831     93.4%      37509      2.37     65.43     65.43
+late               15831     93.4%      37509      2.37     43.87     48.59
+cluster_drop        6634     39.1%      37509      5.65      8.19     60.39
+
+row ratio between the best and worst mask: 2.4x
+
+--- the stages that came out FLAT: rows entering training ---
+  G9  0.65:1       rows>=1 =  16935 (99.9%)
+  G9  0.75:2       rows>=1 =  16782 (99.0%)
+  G9  0.7:1        rows>=1 =  16865 (99.5%)
+  G11 b1_deep      rows>=1 =  15796 (93.2%)
+  G11 b1b2         rows>=1 =  15382 (90.7%)
+  G11 b1b2b3b4     rows>=1 =  13448 (79.3%)

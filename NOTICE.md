@@ -1,17 +1,23 @@
-# Nguồn của dữ liệu dẫn xuất
+# Provenance of the derived data
 
-`code/artifacts/eval_suite_3471.jsonl` là tập hợp dẫn xuất từ ba bộ dữ liệu công
-khai, mỗi bộ phát hành theo giấy phép MIT:
+`code/artifacts/eval_suite_3471.jsonl` is a derived collection assembled from three
+public sources:
 
-| Thành phần | Số bài | Nguồn |
-|---|---|---|
-| `gsm8k-heldout` | 1200 | `openai/gsm8k`, phần held-out của tập train |
-| `gsm8k-test` | 1319 | `openai/gsm8k`, tập test |
-| `math-heldout` | 627 | Hendrycks MATH, phần held-out của tập train |
-| `math500` | 325 | `HuggingFaceH4/MATH-500` |
+| Component | Problems | Source | Licence of the source |
+|---|---|---|---|
+| `gsm8k-heldout` | 1200 | `openai/gsm8k`, held-out slice of the train split | MIT |
+| `gsm8k-test` | 1319 | `openai/gsm8k`, test split | MIT |
+| `math-heldout` | 627 | Hendrycks MATH, held-out slice of the train split | MIT |
+| `math500` | 325 | `HuggingFaceH4/MATH-500` | see below |
 
-File chỉ chứa câu hỏi, đáp án đã chuẩn hoá và nhãn nguồn. Dòng đầu là một bản ghi
-`_meta` ghi lại hạt giống chia tập và kết quả phép kiểm rời nhau với tập huấn luyện.
+`HuggingFaceH4/MATH-500` carries no licence declaration on its dataset card. The
+subset is drawn from the test split of Hendrycks MATH by way of PRM800K, and both
+of those are released under the MIT licence; we record that chain rather than
+assert a licence the card does not state.
 
-Trọng số mô hình không được phát hành ở đây; chúng thuộc họ Qwen2.5 và theo giấy
-phép của nhà phát hành.
+The file holds only the question text, the normalised final answer and a source
+label. Its first line is a `_meta` record giving the split seed and the result of
+the disjointness check against the training pool.
+
+Model weights are not released here. The models used are from the Qwen2.5 family:
+most are Apache 2.0, while Qwen2.5-3B is covered by the Qwen Research licence.

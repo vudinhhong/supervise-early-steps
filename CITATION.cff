@@ -3,21 +3,48 @@ message: "If you use this package, please cite the paper."
 title: "Supervise the early steps: reproduction package"
 abstract: >-
   Code, result blobs, the pre-registration file and a verification script for the
-  paper "Supervise the early steps: a matched study of where the loss is applied
-  when distilling reasoning into small language models".
+  paper "Supervise the early steps: where the loss is applied matters more than which divergence".
+type: software
 authors:
   - family-names: Vu
     given-names: Dinh-Hong
     affiliation: Ton Duc Thang University
-  # XIN XÁC NHẬN cách tách họ/tên của tác giả thứ hai: conf.tex ghi
-  # "Nguyen Ngoc Trinh Nghi" không có dấu gạch nối, nên không suy được chắc chắn.
-  - family-names: Nguyen
-    given-names: Ngoc Trinh Nghi
+    # orcid: "https://orcid.org/XXXX-XXXX-XXXX-XXXX"
+  - family-names: Nguyen-Ngoc
+    given-names: Trinh-Nghi
     affiliation: Ton Duc Thang University
   - family-names: Le
     given-names: Anh-Cuong
     affiliation: Ton Duc Thang University
 license: MIT
-repository-code: "https://github.com/OWNER/REPO"      # <-- sửa sau khi tạo repo
+repository-code: "https://github.com/vudinhhong/supervise-early-steps"
+# Concept DOI: Zenodo keeps it pointing at the newest release, so it does not
+# change when a new version is archived.
 doi: "10.5281/zenodo.24211995"
-version: "v1.0.0"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24211995"
+    description: "Concept DOI, always resolving to the latest archived version"
+version: "v1.0.2"
+date-released: "2026-11-14"
+keywords:
+  - knowledge distillation
+  - small language models
+  - mathematical reasoning
+  - distribution shift
+  - coverage coefficient
+  - reproducibility
+preferred-citation:
+  type: conference-paper
+  title: "Supervise the early steps: where the loss is applied matters more than which divergence"
+  authors:
+    - family-names: Vu
+      given-names: Dinh-Hong
+      affiliation: Ton Duc Thang University
+    - family-names: Nguyen-Ngoc
+      given-names: Trinh-Nghi
+      affiliation: Ton Duc Thang University
+    - family-names: Le
+      given-names: Anh-Cuong
+      affiliation: Ton Duc Thang University
+  year: 2026

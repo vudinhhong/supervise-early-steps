@@ -119,8 +119,8 @@ def fig_cells(path):
                 mfc=col if filled else "white", mew=1.0, label=lab, zorder=4)
     # the two untrained accuracies: 0.5B starts above 1.5B, so each dotted line
     # is labelled rather than sharing one caption word.
-    for st, txt, xt, dy, va in ((S05, "0.5B untrained", 0.95, 1.4, "bottom"),
-                                (S15, "1.5B untrained", 1.95, -1.4, "top")):
+    for st, txt, xt, dy, va in ((S05, "0.5B untrained", 2.15, 1.4, "bottom"),
+                                (S15, "1.5B untrained", 0.50, -1.4, "top")):
         y = 100 * g3["base"][st]["accuracy"]
         ax.axhline(y, color="0.6", lw=0.6, ls=(0, (2, 2)), zorder=1)
         ax.text(xt, y + dy, txt, fontsize=6.0, color="0.45", ha="left", va=va)
@@ -133,8 +133,11 @@ def fig_cells(path):
     ax.set_yticks([0, 20, 40, 60])
     ax.set_ylabel("accuracy (%)")
     ax.tick_params(axis="x", pad=2)
-    ax.legend(loc="lower left", bbox_to_anchor=(0.005, 0.20), frameon=False,
-              handlelength=2.0, borderaxespad=0.0, labelspacing=0.25)
+    # two rows rather than four: at this axes height a single column reaches
+    # up into the uniform column's seed cloud
+    ax.legend(loc="lower left", bbox_to_anchor=(0.0, 0.18), frameon=False,
+              ncol=2, handlelength=1.8, borderaxespad=0.0, labelspacing=0.2,
+              columnspacing=1.1)
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     fig.savefig(path)
@@ -165,7 +168,7 @@ def fig_contrasts(path):
     axl.set_yticks(range(len(rows)))
     axl.set_yticklabels([r[2] for r in rows])
     axl.set_ylim(-0.6, len(rows) - 0.4)
-    axl.set_xlim(-2.5, 35.2)
+    axl.set_xlim(-2.5, 40.0)
     axl.set_xlabel("early $-$ late (points)")
     axl.set_title("(a) the matched pair", pad=3)
 

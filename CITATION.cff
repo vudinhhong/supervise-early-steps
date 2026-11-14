@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this package, please cite the paper."
-title: "Supervise the early steps: reproduction package"
+title: "Do not skip the early steps: reproduction package"
 abstract: >-
   Code, result blobs, the pre-registration file and a verification script for the
   paper "Do not skip the early steps: where the loss is applied matters more than which divergence".
@@ -24,7 +24,7 @@ identifiers:
   - type: doi
     value: "10.5281/zenodo.24211995"
     description: "Concept DOI, always resolving to the latest archived version"
-version: "v1.0.2"
+version: "v1.0.4"
 date-released: "2026-11-14"
 keywords:
   - knowledge distillation

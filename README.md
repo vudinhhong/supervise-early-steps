@@ -18,9 +18,9 @@ python verify_paper_numbers.py
 ```
 
 This recomputes the numbers the paper states, with the exceptions listed below, and prints each next to the paper's
-version. The last run reported **290 checks OK, 0 MISMATCH** with the manuscript beside the
-package, and **280 OK** without it: ten of the checks read `conf.tex` and are skipped
-when it is absent. If a number ever stops
+version. The last run reported **301 checks OK, 0 MISMATCH** with the manuscript beside the
+package, and **283 OK** without it: eighteen of the checks read `conf.tex` and are
+skipped when it is absent. If a number ever stops
 matching, the paper is wrong and the script says which one.
 
 ## Layout
@@ -84,7 +84,7 @@ file states both.
 
 ## What is not checked, and what is not here
 
-The script checks 290 values, or 280 when the manuscript is not beside the package. Section 8 of its output also reads `conf.tex` and
+The script checks 301 values, or 283 when the manuscript is not beside the package. Section 8 of its output also reads `conf.tex` and
 requires the manuscript to print what the blobs say, which is what catches a figure
 left stale when a stage is re-run. It does not parse the whole manuscript: the
 3B and 14B teacher accuracies, the 3B student's untrained accuracy and the

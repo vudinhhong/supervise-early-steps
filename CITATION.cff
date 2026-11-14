@@ -9,14 +9,15 @@ authors:
   - family-names: Vu
     given-names: Dinh-Hong
     affiliation: Ton Duc Thang University
-  - family-names: Duong
-    given-names: Trong-Chi
+  # XIN XÁC NHẬN cách tách họ/tên của tác giả thứ hai: conf.tex ghi
+  # "Nguyen Ngoc Trinh Nghi" không có dấu gạch nối, nên không suy được chắc chắn.
+  - family-names: Nguyen
+    given-names: Ngoc Trinh Nghi
     affiliation: Ton Duc Thang University
   - family-names: Le
     given-names: Anh-Cuong
     affiliation: Ton Duc Thang University
 license: MIT
 repository-code: "https://github.com/OWNER/REPO"      # <-- sửa sau khi tạo repo
-# Sau khi Zenodo cấp DOI, thêm hai dòng sau và đẩy lại:
-# doi: "10.5281/zenodo.XXXXXXX"
-# version: "v1.0.0"
+doi: "10.5281/zenodo.24211995"
+version: "v1.0.0"

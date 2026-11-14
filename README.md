@@ -7,6 +7,8 @@ The numbers the paper states are produced from the files in `results/` by the co
 `code/`. Every number the paper states is checked against a result file by
 `verify_paper_numbers.py`, with the exceptions listed under *What is not checked*.
 
+This package is archived at <https://doi.org/10.5281/zenodo.24211995>.
+
 ## Check it in one command
 
 ```

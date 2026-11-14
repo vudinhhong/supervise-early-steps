@@ -39,7 +39,7 @@ def check(label, claimed, got, tol=None):
         good = abs(c - float(got)) <= lim * (1.0 + 1e-9) + 1e-12
     ok_count += good
     bad_count += (not good)
-    print("  %-52s paper=%-12s file=%-12s %s"
+    print("  %-52s expect=%-12s file=%-12s %s"
           % (label, claimed, (("%.4g" % got) if not isinstance(got, str) else got),
              "OK" if good else "MISMATCH"))
 
@@ -65,10 +65,19 @@ def in_tex(label, snippet):
 
 
 print("=" * 100)
-print("SECTION 0  the numbers the manuscript prints, found in conf.tex")
+print("SECTION 0  what is checked against what")
 print("=" * 100)
+print("  Every value below is recomputed from results/ and compared with the")
+print("  number this script expects. Many of them the manuscript no longer")
+print("  prints in running text: they are what Figures 1 and 2 plot, and they")
+print("  are checked here because a stale figure is as wrong as a stale number.")
 if TEXT is None:
-    print("  (conf.tex is not in this package -- the manuscript text is unchecked)")
+    print("  conf.tex is not beside the package, so the manuscript text itself")
+    print("  is unchecked; with it present, Section 8 requires the manuscript to")
+    print("  print the strings recomputed here.")
+else:
+    print("  conf.tex is beside the package, so Section 8 also requires the")
+    print("  manuscript to print the strings recomputed here.")
 
 print()
 print("=" * 100)
@@ -147,7 +156,7 @@ for (st, ob), want in cells.items():
              if r["student"] == st and r["objective"] == ob and r["mode"] == m]
         check("accuracy %s/%s/%s (%%)" % (st.split("/")[-1], ob, m), w,
               float(np.mean(v)), tol=0.005)
-# the standard deviations Table 1 prints in parentheses
+# the standard deviations Figure 1 plots as seed clouds
 sds = {(S05, "ce"): [0.44, 0.56, 6.10, 2.06],
        (S05, "fkl"): [0.36, 0.43, 3.50, 3.27],
        (S15, "ce"): [0.43, 0.50, 8.16, 4.64],
@@ -478,7 +487,7 @@ else:
 
 print()
 print("=" * 100)
-print("SECTION 6b  Table 2, the five forward tests")
+print("SECTION 6b  Table 1, the five forward tests")
 print("=" * 100)
 fwd = R.parent / "forward_tests.json"
 if fwd.exists():
@@ -488,13 +497,26 @@ if fwd.exists():
     def c2s(stage):
         return [a["c2"] for a in F[stage]["arms"].values()]
 
-    check("Table 2, training stages", 3, F["_totals"]["stages"])
-    check("Table 2, arms", 18, F["_totals"]["arms"])
-    check("Table 2, runs", 54, F["_totals"]["runs"])
-    check("Table 2, no run lost to GPU memory", 0, F["_totals"]["oom_runs"])
+    check("Table 1, training stages", 3, F["_totals"]["stages"])
+    check("Table 1, arms", 18, F["_totals"]["arms"])
+    check("Table 1, runs", 54, F["_totals"]["runs"])
+    check("Table 1, no run lost to GPU memory", 0, F["_totals"]["oom_runs"])
     allc2 = c2s("ladder_g9") + c2s("positional_g10") + c2s("depth_breadth_g11")
-    check("Table 2, lowest C2 over all arms", 1.10, min(allc2))
-    check("Table 2, highest C2 over all arms", 30.64, max(allc2))
+    check("Table 1, lowest C2 over all arms", 1.10, min(allc2))
+    check("Table 1, highest C2 over all arms", 30.64, max(allc2))
+
+    # The range the text quotes is over the eleven PREDICTION arms (g10, g11).
+    # Quoting it over all eighteen would be wrong, because the top of the ladder
+    # falls below it; that is checked here so the two cannot be confused again.
+    pred = means("positional_g10") + means("depth_breadth_g11")
+    check("prediction arms, lowest accuracy (%)", 65.42, min(pred))
+    check("prediction arms, highest accuracy (%)", 67.75, max(pred))
+    check("the ladder's top level sits below the prediction range", True,
+          min(means("ladder_g9")) < min(pred))
+    if TEX:
+        in_tex("the prediction-arm range, scoped to predictions",
+               "every prediction arm lands between $%.2f\\%%$ and $%.2f\\%%$"
+               % (min(pred), max(pred)))
 
     # row 1: magnitude of C2 on the ladder
     L = F["ladder_g9"]
@@ -587,12 +609,12 @@ if fwd.exists():
           True, max(a["mean_pct"] for a in L["arms"].values()
                     if abs(a["c2"] - 16.65) < 0.01) > L["base_accuracy_pct"] - 1.0)
 
-    # every arm sits far above the catastrophic LATE arm of Table 1
+    # every arm sits far above the catastrophic LATE arm of the factorial
     check("all forward-test arms stay above 64% (no cliff anywhere)", True,
           min(means("ladder_g9") + means("positional_g10")
               + means("depth_breadth_g11")) > 64.0)
 
-    # the bars in Table 2 are the ones the pre-registration file holds
+    # the bars in Table 1 are the ones the pre-registration file holds
     thr = R.parent / "code" / "thresholds.json"
     if thr.exists():
         T = json.loads(thr.read_text())
@@ -620,7 +642,7 @@ if fwd.exists():
     else:
         print("  (thresholds.json absent -- the registered bars are unchecked)")
 else:
-    print("  (forward_tests.json absent -- Table 2 is unchecked)")
+    print("  (forward_tests.json absent -- Table 1 is unchecked)")
 
 print()
 print("=" * 100)
@@ -647,6 +669,25 @@ else:
     in_tex("abstract, the interval on the largest",
            "Welch interval of $[%.1f,%.1f]$" % (top[1], top[2]))
 
+    # EARLY against UNIFORM: the paper must say that EARLY is the lower of the
+    # two, because the matched pair is a cost of dropping the opening steps and
+    # not a gain from concentrating supervision on them
+    eu = []
+    for st, obj in ((S15, "ce"), (S15, "fkl"), (S05, "ce"), (S05, "fkl")):
+        eu.append(ci(cell(st, obj, "uniform"), cell(st, obj, "early")))
+    check("early is below uniform in all four cells", 4, sum(d > 0 for d, _, _ in eu))
+    check("three of the four early-uniform intervals exclude zero", 3,
+          sum(lo * hi > 0 for _, lo, hi in eu))
+    in_tex("early does not improve on uniform",
+           "lower in all four cells, by $%.2f$, $%.2f$, $%.2f$ and $%.2f$ points"
+           % tuple(sorted(d for d, _, _ in eu)))
+
+    # the widest seed spread of LATE, which the text rounds to a whole number
+    spread = max(cell(st, obj, "late").max() - cell(st, obj, "late").min()
+                 for st in (S05, S15) for obj in ("ce", "fkl"))
+    in_tex("the widest LATE seed spread",
+           "spread by up to $%d$ points" % round(spread))
+
     # the positive control's single-arm detectable difference
     in_tex("the positive control's single-arm MDE",
            "positive control's $%.2f$ from the single-arm form" % gpc["seed_mde_points"])
@@ -666,12 +707,15 @@ else:
         in_tex("soft targets under cluster-drop, %s" % nm,
                "$%+.2f$ $[%.2f,%.2f]$" % (d, lo, hi))
 
-    # the variance ratios quoted for the matched pair
-    ratios = []
-    for st, obj in ((S05, "fkl"), (S05, "ce"), (S15, "ce"), (S15, "fkl")):
-        ratios.append(cell(st, obj, "late").var(ddof=1) / cell(st, obj, "early").var(ddof=1))
-    in_tex("the four variance ratios",
-           "factors of $%d$, $%d$, $%d$ and $%d$" % tuple(round(r) for r in sorted(ratios)))
+    # the variance ratios quoted for the matched pair, each beside the cell it
+    # belongs to: the paper names them because the four are not in cell order
+    for st, obj, nm in ((S05, "fkl", "0.5B \\textsc{fkl}"),
+                        (S05, "ce", "0.5B \\textsc{ce}"),
+                        (S15, "ce", "1.5B \\textsc{ce}"),
+                        (S15, "fkl", "1.5B \\textsc{fkl}")):
+        r = cell(st, obj, "late").var(ddof=1) / cell(st, obj, "early").var(ddof=1)
+        in_tex("variance ratio, %s" % nm.replace("\\textsc{", "").replace("}", ""),
+               "$%d$ (%s)" % (round(r), nm))
 
     # the ladder: the flat band, the step and its interval
     if TEX and fwd.exists():

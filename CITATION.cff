@@ -3,13 +3,12 @@ message: "If you use this package, please cite the paper."
 title: "Supervise the early steps: reproduction package"
 abstract: >-
   Code, result blobs, the pre-registration file and a verification script for the
-  paper "Supervise the early steps: where the loss is applied matters more than which divergence".
+  paper "Do not skip the early steps: where the loss is applied matters more than which divergence".
 type: software
 authors:
   - family-names: Vu
     given-names: Dinh-Hong
     affiliation: Ton Duc Thang University
-    # orcid: "https://orcid.org/XXXX-XXXX-XXXX-XXXX"
   - family-names: Nguyen-Ngoc
     given-names: Trinh-Nghi
     affiliation: Ton Duc Thang University
@@ -36,7 +35,7 @@ keywords:
   - reproducibility
 preferred-citation:
   type: conference-paper
-  title: "Supervise the early steps: where the loss is applied matters more than which divergence"
+  title: "Do not skip the early steps: where the loss is applied matters more than which divergence"
   authors:
     - family-names: Vu
       given-names: Dinh-Hong

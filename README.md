@@ -1,10 +1,12 @@
 # Reproduction package — conference paper
 
-*Supervise the early steps: where the loss is applied matters more than which divergence.*
+*Do not skip the early steps: where the loss is applied matters more than which divergence.*
 
 The numbers the paper states are produced from the files in `results/` by the code in
-`code/`. Every number the paper states is checked against a result file by
-`verify_paper_numbers.py`, with the exceptions listed under *What is not checked*.
+`code/`, and are checked against a result file by `verify_paper_numbers.py`, with the
+exceptions listed under *What is not checked*. The script also checks the values the two
+figures plot but the text no longer prints, so a figure left stale by a re-run fails the
+same way a stale number would.
 
 This package is at <https://github.com/vudinhhong/supervise-early-steps>, archived at
 <https://doi.org/10.5281/zenodo.24211995>.

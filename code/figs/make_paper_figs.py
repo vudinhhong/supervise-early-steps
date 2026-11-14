@@ -21,28 +21,35 @@ import matplotlib.pyplot as plt
 
 HERE = pathlib.Path(__file__).resolve().parent
 R = HERE.parent.parent / "results"
-OUT = pathlib.Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else HERE.parent.parent.parent
+OUT = (pathlib.Path(sys.argv[1]).resolve() if len(sys.argv) > 1
+       else HERE.parent.parent / "figs")
 
 S05, S15 = "Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-1.5B"
 MASKS = ["uniform", "early", "late", "cluster_drop"]
 MLAB = ["uniform", "early", "late", "cluster-\ndrop"]
 TW = 4.80          # text width in inches (122 mm)
 
-# Okabe-Ito, which survives the common forms of colour blindness. Colour carries
-# the objective and the dash pattern carries the student, so the figures still
-# read in a greyscale print run.
+# Okabe-Ito, which survives the common forms of colour blindness. In Figure 1
+# colour carries the student and the dash pattern carries the objective: the two
+# colours differ in greyscale luminance (87 against 162) where two tints of the
+# same hue would not, so the figure still reads in a monochrome print run.
 BLUE, VERM, SKY, ORANGE = "#0072B2", "#D55E00", "#56B4E9", "#E69F00"
 GREEN = "#009E73"
 
 plt.rcParams.update({
     "font.family": "serif",
     "font.serif": ["Times New Roman", "DejaVu Serif"],
-    "font.size": 6.8,
-    "axes.labelsize": 6.8,
-    "axes.titlesize": 7.6,
-    "xtick.labelsize": 6.2,
-    "ytick.labelsize": 6.2,
-    "legend.fontsize": 6.2,
+    "font.size": 7.2,
+    "axes.labelsize": 7.2,
+    "axes.titlesize": 7.8,
+    "xtick.labelsize": 6.8,
+    "ytick.labelsize": 6.8,
+    "legend.fontsize": 6.8,
+    # keep the mathtext in the same face as the body text, and embed real
+    # outlines rather than the Type 3 bitmaps matplotlib writes by default
+    "mathtext.fontset": "stix",
+    "pdf.fonttype": 42,
+    "ps.fonttype": 42,
     "axes.linewidth": 0.6,
     "xtick.major.width": 0.6,
     "ytick.major.width": 0.6,
@@ -89,13 +96,13 @@ def ci(a, b):
 # deviations; what it cannot show is that the spread belongs to two particular
 # masks, and that LATE is bimodal rather than merely noisy.
 def fig_cells(path):
-    series = [(S15, "fkl", "1.5B, FKL", "o", "-", BLUE),
-              (S15, "ce", "1.5B, CE", "s", "-", VERM),
-              (S05, "fkl", "0.5B, FKL", "^", "--", SKY),
-              (S05, "ce", "0.5B, CE", "v", "--", ORANGE)]
-    fig, ax = plt.subplots(figsize=(TW, 1.56))
+    series = [(S15, "fkl", "1.5B, FKL", "o", "-", BLUE, True),
+              (S15, "ce", "1.5B, CE", "s", "--", BLUE, False),
+              (S05, "fkl", "0.5B, FKL", "^", "-", ORANGE, True),
+              (S05, "ce", "0.5B, CE", "v", "--", ORANGE, False)]
+    fig, ax = plt.subplots(figsize=(TW, 1.46))
     xs = np.arange(4)
-    for k, (st, obj, lab, mk, ls, col) in enumerate(series):
+    for k, (st, obj, lab, mk, ls, col, filled) in enumerate(series):
         means = np.array([cell(st, obj, m).mean() for m in MASKS])
         # the four series share each x position, so their seed clouds are pushed
         # apart before the within-series jitter is added
@@ -103,10 +110,13 @@ def fig_cells(path):
         for i, m in enumerate(MASKS):
             v = cell(st, obj, m)
             jit = (np.arange(len(v)) - (len(v) - 1) / 2) * 0.022
-            ax.scatter(xs[i] + off + jit, v, s=3.6, facecolors="none",
-                       edgecolors=col, linewidths=0.5, alpha=0.75, zorder=2)
-        ax.plot(xs, means, ls, color=col, lw=1.0, marker=mk, ms=3.4,
-                mfc="white", mew=1.0, label=lab, zorder=4)
+            # seeds wear their series' marker, so the cloud stays attributable
+            # when the colour is flattened to grey
+            ax.scatter(xs[i] + off + jit, v, s=3.4, marker=mk,
+                       facecolors=col if filled else "none",
+                       edgecolors=col, linewidths=0.45, alpha=0.65, zorder=2)
+        ax.plot(xs, means, ls, color=col, lw=1.0, marker=mk, ms=3.6,
+                mfc=col if filled else "white", mew=1.0, label=lab, zorder=4)
     # the two untrained accuracies: 0.5B starts above 1.5B, so each dotted line
     # is labelled rather than sharing one caption word.
     for st, txt, xt, dy, va in ((S05, "0.5B untrained", 0.95, 1.4, "bottom"),
@@ -115,8 +125,9 @@ def fig_cells(path):
         ax.axhline(y, color="0.6", lw=0.6, ls=(0, (2, 2)), zorder=1)
         ax.text(xt, y + dy, txt, fontsize=6.0, color="0.45", ha="left", va=va)
     ax.set_xticks(xs)
-    ax.set_xticklabels(["uniform\n$C_2{=}1.0$", "early\n$C_2{=}5.4$",
-                        "late\n$C_2{=}14.5$", "cluster-drop\n$C_2{=}39.1$"])
+    ax.set_xticklabels(["%s\n$C_2{=}%.1f$" % (lab, g3["coverage"][m]["c2"])
+                        for lab, m in zip(["uniform", "early", "late",
+                                           "cluster-drop"], MASKS)])
     ax.set_xlim(-0.35, 3.55)
     ax.set_ylim(-5.5, 74)   # room under the 1.5B line for its label
     ax.set_yticks([0, 20, 40, 60])
@@ -139,8 +150,8 @@ def fig_contrasts(path):
     fig, (axl, axr, axc) = plt.subplots(
         1, 3, figsize=(TW, 1.40), gridspec_kw={"width_ratios": [1.0, 1.0, 0.92]})
 
-    col = {("ce", S15): VERM, ("fkl", S15): BLUE,
-           ("ce", S05): ORANGE, ("fkl", S05): SKY}
+    col = {("ce", S15): BLUE, ("fkl", S15): BLUE,
+           ("ce", S05): ORANGE, ("fkl", S05): ORANGE}
     rows = [(S15, "ce", "1.5B, CE"), (S15, "fkl", "1.5B, FKL"),
             (S05, "ce", "0.5B, CE"), (S05, "fkl", "0.5B, FKL")]
     for k, (st, obj, lab) in enumerate(rows):
@@ -154,7 +165,7 @@ def fig_contrasts(path):
     axl.set_yticks(range(len(rows)))
     axl.set_yticklabels([r[2] for r in rows])
     axl.set_ylim(-0.6, len(rows) - 0.4)
-    axl.set_xlim(-2.5, 36.5)
+    axl.set_xlim(-2.5, 35.2)
     axl.set_xlabel("early $-$ late (points)")
     axl.set_title("(a) the matched pair", pad=3)
 
@@ -196,11 +207,11 @@ def fig_contrasts(path):
     axc.annotate("", xy=(xa, mean[-1]), xytext=(xa, mean[-2]),
                  arrowprops=dict(arrowstyle="<->", lw=0.7, color="black",
                                  shrinkA=0.5, shrinkB=0.5))
-    axc.text(xa - 0.6, (mean[-1] + mean[-2]) / 2, "%.2f" % (mean[-2] - mean[-1]),
-             ha="right", va="center", fontsize=6.0)
+    axc.text(xa + 0.45, (mean[-1] + mean[-2]) / 2, "%.2f" % (mean[-2] - mean[-1]),
+             ha="left", va="center", fontsize=6.6)
     axc.set_xlabel("$C_2$ (clipped)")
     axc.set_ylabel("accuracy (%)", labelpad=1.5)
-    axc.set_xlim(3.4, 22.6)
+    axc.set_xlim(3.4, 24.6)
     axc.set_ylim(64.8, 68.5)
     axc.set_yticks([65, 66, 67, 68])
     axc.set_title("(c) the coverage ladder", pad=3)
@@ -211,7 +222,7 @@ def fig_contrasts(path):
             ax.spines[side].set_visible(False)
     for ax in (axl, axr):
         ax.tick_params(axis="y", length=0, pad=1.5)
-    fig.subplots_adjust(wspace=0.60)
+    fig.subplots_adjust(wspace=0.74)
     fig.savefig(path)
     plt.close(fig)
     return path

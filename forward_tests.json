@@ -1,5 +1,5 @@
 {
- "_what": "Per-arm accuracies behind Table 2 of the conference paper: the five registered forward tests. Released so every entry in the table can be recomputed.",
+ "_what": "Per-arm accuracies behind Table 1 of the conference paper: the five registered forward tests. Released so every entry in the table can be recomputed.",
  "_produced": "2026-11-13",
  "_student": "Qwen2.5-1.5B, CE objective, three seeds per arm.",
  "_how_to_read": "Each stage matches supervised step count across its own arms (matched_steps). An arm is one supervision pattern; mean_pct is its mean over seeds.",
